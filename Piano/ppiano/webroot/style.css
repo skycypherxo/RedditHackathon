@@ -1,0 +1,106 @@
+.game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+.score {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+}
+
+.sequence-display {
+    font-size: 22px;
+    margin-bottom: 30px;
+    min-height: 30px;
+    color: #444;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+.piano {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin: 40px auto;
+    background: linear-gradient(145deg, #000001, #c31212);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
+    max-width: 700px;
+}
+
+.key {
+    cursor: pointer;
+    transition: all 0.1s ease;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    user-select: none;
+}
+
+.white {
+    width: 60px;
+    height: 200px;
+    background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+    border: 1px solid #ccc;
+    border-radius: 0 0 5px 5px;
+    color: #666;
+    z-index: 1;
+}
+
+.white:hover {
+    background: linear-gradient(to bottom, #fff 0%, #e3e3e3 100%);
+}
+
+.black {
+    width: 40px;
+    height: 120px;
+    background: linear-gradient(to bottom, #333 0%, #000 100%);
+    margin: 0 -20px;
+    z-index: 2;
+    border-radius: 0 0 3px 3px;
+    color: #ccc;
+    box-shadow: -1px -1px 2px rgba(255, 255, 255, 0.2) inset,
+                0 -5px 2px 3px rgba(0, 0, 0, 0.6) inset,
+                0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.black:hover {
+    background: linear-gradient(to bottom, #444 0%, #222 100%);
+}
+
+.key.active {
+    background: linear-gradient(to bottom, #7cb5ec 0%, #4a9ced 100%);
+    transform: scale(0.98);
+}
+
+.white.active {
+    border-color: #7cb5ec;
+}
+
+#start-btn {
+    padding: 12px 30px;
+    font-size: 20px;
+    cursor: pointer;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+#start-btn:hover {
+    background: #45a049;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
