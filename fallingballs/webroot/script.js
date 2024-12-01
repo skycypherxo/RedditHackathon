@@ -11,9 +11,9 @@ let balls = [];
 let bullets = [];
 let shooter = {
     x: canvas.width / 2,
-    y: canvas.height - 30,
-    width: 40,
-    height: 60
+    y: canvas.height - 15,
+    width: 20,
+    height: 30
 };
 
 const colors = ['red', 'blue', 'green', 'yellow'];
@@ -63,9 +63,9 @@ function createBall() {
     if (balls.length >= maxBallsOnScreen) return;
     
     const ball = {
-        x: Math.random() * (canvas.width - 40) + 20,
-        y: -20,
-        radius: 20,
+        x: Math.random() * (canvas.width - 20) + 10,
+        y: -10,
+        radius: 10,
         color: colors[Math.floor(Math.random() * colors.length)],
         speed: baseSpeed * difficultyLevel
     };
@@ -77,9 +77,9 @@ canvas.addEventListener('click', (e) => {
     const bullet = {
         x: shooter.x + shooter.width / 2,
         y: shooter.y,
-        radius: 5,
+        radius: 3,
         color: currentColor,
-        speed: 5
+        speed: 3
     };
     bullets.push(bullet);
 });
@@ -257,5 +257,60 @@ function gameOver() {
     gameOverScreen.style.display = 'block';
     finalScore.textContent = `${score} (High Score: ${highestScore})`;
 }
+
+//  touch event handlers
+function initTouchControls() {
+    let canvas = document.getElementById('gameCanvas');
+    
+    //  touch movement
+    canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const scaleX = canvas.width / rect.width;
+        
+        shooter.x = (touch.clientX - rect.left) * scaleX - shooter.width / 2;
+        
+        // Keep shooter within canvas bounds
+        if (shooter.x < 0) shooter.x = 0;
+        if (shooter.x + shooter.width > canvas.width) shooter.x = canvas.width - shooter.width;
+    });
+
+    // Handle touch shooting
+    canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        const bullet = {
+            x: shooter.x + shooter.width / 2,
+            y: shooter.y,
+            radius: 3,
+            color: currentColor,
+            speed: 3
+        };
+        bullets.push(bullet);
+    });
+}
+
+// resize handler to maintain aspect ratio
+function handleResize() {
+    const canvas = document.getElementById('gameCanvas');
+    const container = canvas.parentElement;
+    const containerWidth = container.clientWidth;
+    const aspectRatio = 0.666;
+    
+    if (containerWidth < 600) {
+        canvas.style.width = containerWidth + 'px';
+        canvas.style.height = (containerWidth * aspectRatio) + 'px';
+    } else {
+        canvas.style.width = '600px';
+        canvas.style.height = '400px';
+    }
+}
+
+function initMobile() {
+    initTouchControls();
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial resize
+}
+initMobile();
 
 gameLoop(); 

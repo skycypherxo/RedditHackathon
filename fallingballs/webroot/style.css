@@ -18,7 +18,7 @@ body {
 }
 
 .game-info {
-  width: 800px;
+  width: 600px;
   display: flex;
   justify-content: space-between;
   padding: 15px;
@@ -61,4 +61,43 @@ body {
 
 #restart-btn:hover {
   background: #45a049;
+}
+
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    #gameCanvas {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        touch-action: none; 
+    }
+
+    .game-info {
+        width: 100%;
+        max-width: 600px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    #currentColor, #score, #highScore {
+        font-size: 16px;
+        padding: 8px 15px;
+        width: 80%;
+        text-align: center;
+    }
+
+    #game-over {
+        width: 80%;
+        padding: 20px;
+    }
+
+    #restart-btn {
+        padding: 15px 30px; 
+        font-size: 20px;
+    }
 } 
