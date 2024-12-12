@@ -104,3 +104,17 @@
     background: #45a049;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
+
+
+#leaderboard {
+    margin-top: 20px;
+  }
+  
+  #leaderboardList {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  #leaderboardList li {
+    margin-bottom: 5px;
+  }

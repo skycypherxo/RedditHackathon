@@ -17,6 +17,9 @@ class PianoGame {
         
         this.sequenceDelay = 1000;
         
+        this.isAutoPlaying = false;
+        this.isWatchingPhase = false;
+        
         this.init();
     }
 
@@ -64,17 +67,21 @@ class PianoGame {
 
     async playSequence() {
         console.log('Playing sequence...');
+        this.isAutoPlaying = true;
         this.sequenceDisplay.textContent = 'Watch the sequence...';
         
+        // Play sequence just once
         for (const noteKey of this.sequence) {
             const key = this.findKeyByNote(noteKey);
             if (key) {
                 key.classList.add('active');
                 await this.playSound(noteKey);
                 key.classList.remove('active');
+                await this.sleep(200); // Small gap between notes
             }
         }
         
+        this.isAutoPlaying = false;
         this.sequenceDisplay.textContent = 'Your turn! Repeat the sequence';
     }
 
@@ -87,7 +94,9 @@ class PianoGame {
     }
 
     handleKeyClick(key) {
-        if (!this.isPlaying) return;
+        if (!this.isPlaying || this.isAutoPlaying || this.isWatchingPhase) {
+            return;
+        }
 
         const noteKey = `${key.dataset.note}${key.dataset.octave}`;
         this.playerSequence.push(noteKey);
@@ -105,6 +114,12 @@ class PianoGame {
             this.playerSequence = [];
             this.sequenceDisplay.textContent = 'Correct!';
             
+            // Send score update to parent
+            window.parent.postMessage({
+                type: 'updateScore',
+                data: { score: this.score }
+            }, '*');
+            
             setTimeout(() => {
                 this.generateSequence();
                 this.playSequence();
@@ -116,6 +131,12 @@ class PianoGame {
         this.isPlaying = false;
         this.startBtn.disabled = false;
         this.sequenceDisplay.textContent = 'Game Over! Press Start to play again';
+        
+        // Send final score to parent
+        window.parent.postMessage({
+            type: 'updateScore',
+            data: { score: this.score }
+        }, '*');
     }
 
     sleep(ms) {
@@ -158,8 +179,9 @@ class PianoGame {
         try {
             const sound = this.sounds[noteKey].cloneNode();
             await sound.play();
+            // Just wait for a fixed duration instead of using sequenceDelay
             return new Promise(resolve => {
-                setTimeout(resolve, this.sequenceDelay);
+                setTimeout(resolve, 500); // Reduced from 1000 to make it snappier
             });
         } catch (err) {
             console.error('Error playing sound:', err);
