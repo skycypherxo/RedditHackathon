@@ -5,6 +5,10 @@ class HangmanGame {
         this.canvas = document.getElementById('hangmanCanvas');
         this.canvas.width = 200;
         this.canvas.height = 200;
+        this.timeLimit = 60; // 60 seconds time limit
+        this.timer = null;
+        this.stopwatch = null;
+        this.elapsedTime = 0;
         this.init();
     }
 
@@ -18,7 +22,8 @@ class HangmanGame {
         this.createKeyboard();
         this.updateDisplay();
         this.clearCanvas();
-   
+        this.elapsedTime = 0;
+        this.startStopwatch();
     }
 
     createKeyboard() {
@@ -88,6 +93,7 @@ class HangmanGame {
         const lost = this.remainingGuesses === 0;
 
         if (won || lost) {
+            clearInterval(this.stopwatch); // Stop the stopwatch when game ends
             this.gameOver = true;
             
             // Get the word display element
@@ -124,6 +130,21 @@ class HangmanGame {
         if (step > 0 && step <= parts.length) {
             document.getElementById(parts[step - 1]).style.display = 'block';
         }
+    }
+
+    startStopwatch() {
+        // Clear any existing stopwatch
+        if (this.stopwatch) clearInterval(this.stopwatch);
+        
+        const timerDisplay = document.querySelector('.timer');
+        
+        // Update stopwatch immediately
+        timerDisplay.textContent = `Time: 0s`;
+        
+        this.stopwatch = setInterval(() => {
+            this.elapsedTime++;
+            timerDisplay.textContent = `Time: ${this.elapsedTime}s`;
+        }, 1000);
     }
 }
 
