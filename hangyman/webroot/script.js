@@ -3,7 +3,6 @@ class HangmanGame {
         this.words = ['PEPPER', 'YOUTUBE', 'DISCORD', 'CUTE', 'CODING'];//replace these w subreddit names
         this.maxGuesses = 6;
         this.canvas = document.getElementById('hangmanCanvas');
-        this.ctx = this.canvas.getContext('2d');
         this.canvas.width = 200;
         this.canvas.height = 200;
         this.init();
@@ -19,7 +18,7 @@ class HangmanGame {
         this.createKeyboard();
         this.updateDisplay();
         this.clearCanvas();
-        this.drawGallows();
+   
     }
 
     createKeyboard() {
@@ -112,66 +111,18 @@ class HangmanGame {
     }
 
     clearCanvas() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.strokeStyle = '#fff';
-        this.ctx.lineWidth = 3;
-    }
-
-    drawGallows() {
-        this.ctx.beginPath();
-        // Base
-        this.ctx.moveTo(30, 170);
-        this.ctx.lineTo(100, 170);
-        // Vertical pole
-        this.ctx.moveTo(65, 170);
-        this.ctx.lineTo(65, 30);
-        // Top
-        this.ctx.lineTo(130, 30);
-        // Rope
-        this.ctx.lineTo(130, 50);
-        this.ctx.stroke();
+        // Hide all hangman parts
+        document.querySelectorAll('.hangman-part').forEach(part => {
+            part.style.display = 'none';
+        });
+        // Show the gallows
+        document.getElementById('gallow').style.display = 'block';
     }
 
     drawHangman(step) {
-        this.ctx.strokeStyle = '#fff';
-        this.ctx.lineWidth = 2;
-
-        switch(step) {
-            case 1: // Head
-                this.ctx.beginPath();
-                this.ctx.arc(130, 65, 15, 0, Math.PI * 2);
-                this.ctx.stroke();
-                break;
-            case 2: // Body
-                this.ctx.beginPath();
-                this.ctx.moveTo(130, 80);
-                this.ctx.lineTo(130, 120);
-                this.ctx.stroke();
-                break;
-            case 3: // Left arm
-                this.ctx.beginPath();
-                this.ctx.moveTo(130, 90);
-                this.ctx.lineTo(100, 105);
-                this.ctx.stroke();
-                break;
-            case 4: // Right arm
-                this.ctx.beginPath();
-                this.ctx.moveTo(130, 90);
-                this.ctx.lineTo(160, 105);
-                this.ctx.stroke();
-                break;
-            case 5: // Left leg
-                this.ctx.beginPath();
-                this.ctx.moveTo(130, 120);
-                this.ctx.lineTo(110, 150);
-                this.ctx.stroke();
-                break;
-            case 6: // Right leg
-                this.ctx.beginPath();
-                this.ctx.moveTo(130, 120);
-                this.ctx.lineTo(150, 150);
-                this.ctx.stroke();
-                break;
+        const parts = ['left-hand', 'body', 'head', 'right-hand','rope'];
+        if (step > 0 && step <= parts.length) {
+            document.getElementById(parts[step - 1]).style.display = 'block';
         }
     }
 }
