@@ -121,12 +121,11 @@ class HangmanGame {
         document.querySelectorAll('.hangman-part').forEach(part => {
             part.style.display = 'none';
         });
-        // Show the gallows
-        document.getElementById('gallow').style.display = 'block';
+    
     }
 
     drawHangman(step) {
-        const parts = ['left-hand', 'body', 'head', 'right-hand','rope'];
+        const parts = ['left-hand', 'body', 'head', 'right-hand', 'gallow','rope'];
         if (step > 0 && step <= parts.length) {
             document.getElementById(parts[step - 1]).style.display = 'block';
         }
