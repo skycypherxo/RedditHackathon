@@ -1,0 +1,179 @@
+/* Retro Arcade Theme - Enhanced */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body.retro {
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    background-color: #000;
+    overflow-x: hidden;
+}
+
+/* Scanline Effect */
+body.retro::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Static Background with Enhanced Retro Grid */
+body.retro .theme-background {
+    background: linear-gradient(45deg, #2a0845, #1a0525);
+    position: relative;
+    overflow: hidden;
+}
+
+body.retro .theme-background::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.05) 1px,
+        rgba(255, 0, 128, 0.1) 1px,
+        rgba(255, 0, 128, 0.1) 20px
+    ),
+    repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0.05) 1px,
+        rgba(0, 255, 0, 0.1) 1px,
+        rgba(0, 255, 0, 0.1) 20px
+    );
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+}
+
+/* Game Container with Advanced Glitch Borders */
+body.retro .game-container {
+    background: rgba(0, 0, 0, 0.95);
+    border: 4px solid #fff;
+    box-shadow: 
+        0 0 10px #ff0080, 
+        0 0 20px #00ff00,
+        inset 0 0 15px #ff0080;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+
+body.retro .game-container::before,
+body.retro .game-container::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, #ff0080, #00ff00);
+    animation: borderGlitch 0.5s infinite alternate;
+    opacity: 0.3;
+    z-index: -1;
+}
+
+
+body.retro .key {
+    background: #000;
+    border: 2px solid #fff;
+    color: #fff;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    display: inline-block;
+    font-size: 0.8em;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    font-family: 'Press Start 2P', cursive;
+}
+
+body.retro .key::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent
+    );
+    transition: all 0.5s ease;
+}
+
+body.retro .key:hover::before {
+    left: 100%;
+}
+
+body.retro .key:hover {
+    background: #c8ff00;
+    border-color: #00ff00;
+    color: #000;
+    box-shadow: 
+        0 0 10px #ff0080, 
+        0 0 20px #00ff00,
+        inset 0 0 10px #00ff00;
+}
+
+
+/* Glow Text with Intense Neon Effect */
+body.retro .glow-text {
+    font-size: 2em;
+    color: #fff;
+    text-shadow: 
+        0 0 5px #ff0080, 
+        0 0 10px #00ff00,
+        0 0 15px #ff0080,
+        0 0 20px #00ff00;
+    margin-bottom: 20px;
+}
+
+/* Pixel Border with Animated Glow */
+body.retro .pixel-border {
+    position: relative;
+    padding: 10px;
+    background: #000;
+    border: 4px solid transparent;
+    box-shadow: 
+        0 0 10px #ff0080,
+        inset 0 0 10px #00ff00;
+    background-clip: padding-box;
+}
+
+
+body.retro .pixel-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 4px solid #00ff00;
+    pointer-events: none;
+}
+
+
+
+body.retro .theme-background {
+    background: #ffc9dc; /* Light pink gradient */
+    overflow: hidden;
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, #d8f904, #4ef706); /* Soft gradient from pink to white */
+    filter: blur(50px);
+}

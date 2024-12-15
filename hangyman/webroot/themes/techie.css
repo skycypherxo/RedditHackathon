@@ -1,0 +1,77 @@
+/* Techie Theme */
+body.techie {
+    font-family: 'Courier New', monospace;
+    color: #00ff00;
+}
+
+body.techie .theme-background {
+    background: #1a1a1a;
+    overflow: hidden;
+}
+
+
+
+body.techie .theme-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 150%;
+    background: linear-gradient(transparent 90%, rgba(12, 234, 12, 0.858) 10%);
+    background-size: 100% 10px;
+    animation: scan 2s linear infinite, flicker 0.2s infinite;
+    pointer-events: none; 
+    z-index: -1; /* Ensure it stays behind other elements */
+}
+
+/* Flicker Effect */
+@keyframes flicker {
+    0%, 100% {
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 0.4;
+    }
+    70% {
+        opacity: 0.6;
+    }
+    90% {
+        opacity: 0.2;
+    }
+}
+
+
+
+body.techie .game-container {
+    background-color: none;
+    border: 1px solid #00ff00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+    position: relative;
+}
+
+body.techie .game-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #00ff00;
+    animation: cursor 1.5s step-end infinite;
+}
+
+@keyframes cursor {
+    50% { opacity: 0; }
+}
+
+body.techie .key {
+    background: #000;
+    border: 1px solid #00ff00;
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
+}
+
+body.techie .key:hover {
+    background: #00ff00;
+    color: #000;
+}

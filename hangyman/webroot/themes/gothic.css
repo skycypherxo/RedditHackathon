@@ -1,0 +1,76 @@
+/* Blood Falling Gothic Theme */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;700&display=swap');
+
+body.gothic {
+    font-family: 'Crimson Text', serif;
+    background-color: #1a0f1f;
+    color: #fff;
+}
+
+/* Blood Drip Background */
+body.gothic::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(rgba(0,0,0,0.8), rgba(250, 9, 9, 0.9)),
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 10px,
+            rgba(139,0,0,0.05) 10px,
+            rgba(139,0,0,0.05) 20px
+        );
+    z-index: -2;
+}
+
+/* Blood Falling Effect */
+body.gothic::after {
+    content: '';
+    position: fixed;
+    top: -50px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(139,0,0,0.3),
+        rgba(139,0,0,0.3) 2px,
+        transparent 2px,
+        transparent 10px
+    );
+    animation: bloodFall 10s linear infinite;
+    opacity: 0.5;
+    z-index: -1;
+}
+
+
+
+/* Game Container */
+body.gothic .game-container {
+    background: rgba(0,0,0,0.8);
+    border: 2px solid rgba(139,0,0,0.5);
+    box-shadow: 0 0 20px rgba(139,0,0,0.3);
+}
+
+/* Typography */
+body.gothic .word-display {
+    color: #8b0000;
+    text-shadow: 0 0 10px rgba(139,0,0,0.5);
+}
+
+body.gothic .key {
+    background: rgba(0,0,0,0.7);
+    border: 2px solid #8b0000;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+body.gothic .key:hover {
+    background: rgba(139,0,0,0.5);
+    box-shadow: 0 0 15px rgba(139,0,0,0.7);
+}
+

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Updated CSP to allow 127.0.0.1:5000 -->
   <meta http-equiv="Content-Security-Policy"
-    content="connect-src 'self' http://localhost:5000 http://127.0.0.1:5000 https://www.reddit.com http://127.0.0.1:5500;">
+    content="connect-src 'self' http://localhost:5000 http://127.0.0.1:5000 https://www.reddit.com http://127.0.0.1:5500 https://hangtwo-19wqtgomn-peppers-projects-2ebd9759.vercel.app/ https://hangtwo.vercel.app/;">
   <title>Random Subreddit Post and Hangman</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -24,39 +24,33 @@
 
       <div id="word-display"></div>
 
-<div id="bottom">
-      <div id="hangmanCanvas">
-        <img src="assets/Gallow.png" id="gallow" class="hangman-part">
-        <img src="assets/Rope.png" id="rope" class="hangman-part">
-        <img src="assets/Head.png" id="head" class="hangman-part">
-        <img src="assets/Body.png" id="body" class="hangman-part">
-        <img src="assets/LeftHand.png" id="left-hand" class="hangman-part">
-        <img src="assets/RightHand.png" id="right-hand" class="hangman-part">
-      </div>
+      <div id="bottom">
+        <div id="hangmanCanvas">
+          <img src="assets/Gallow.png" id="gallow" class="hangman-part">
+          <img src="assets/Rope.png" id="rope" class="hangman-part">
+          <img src="assets/Head.png" id="head" class="hangman-part">
+          <img src="assets/Body.png" id="body" class="hangman-part">
+          <img src="assets/LeftHand.png" id="left-hand" class="hangman-part">
+          <img src="assets/RightHand.png" id="right-hand" class="hangman-part">
+        </div>
 
-      <div class="keyboard"></div>
-    </div>
+        <div class="keyboard"></div>
+      </div>
       <button id="new-game">New Game</button>
     </div>
+    <div class="themes">
+      <div class="theme-icon kawaii" data-theme="kawaii">🌸</div>
+      <div class="theme-icon space" data-theme="space">🚀</div>
+      <div class="theme-icon neon" data-theme="neon">💫</div>
+      <div class="theme-icon techie" data-theme="techie">💻</div>
+      <div class="theme-icon retro" data-theme="retro">👾</div>
+      <div class="theme-icon gothic" data-theme="gothic">🦇</div>
+    </div>
   </div>
-  </div>
-
-  </div>
-
-
-
-  </div>
-  </div>
-
-
-
-
-
 
   </div>
 
-
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 
 </html>

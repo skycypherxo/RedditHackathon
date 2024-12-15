@@ -1,0 +1,133 @@
+/* kawaii Nights Theme */
+
+@import url('https://fonts.googleapis.com/css2?family=Kosugi+Maru&display=swap');
+body.kawaii {
+    font-family: 'Kosugi Maru', sans-serif;
+    color: #fff;
+    background: #ffbae7;
+}
+
+body.kawaii .theme-background {
+    background: #ffc9dc; /* Light pink gradient */
+    overflow: hidden;
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, #ffc9dc, #fff); /* Soft gradient from pink to white */
+    filter: blur(50px);
+}
+
+@keyframes kawaiiPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+body.kawaii .game-container {
+    background: rgba(255, 182, 193, 0.1); /* Soft pink with opacity */
+    border: 2px solid #ff77b5; /* Soft pink border */
+    box-shadow: 0 0 20px #ff77b5, inset 0 0 20px #ff77b5; /* Soft pink glowing effect */
+    animation: kawaiiBorder 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes kawaiiBorder {
+    from { box-shadow: 0 0 20px #ff77b5, inset 0 0 20px #ff77b5; }
+    to { box-shadow: 0 0 40px #ff77b5, inset 0 0 40px #ff77b5; }
+}
+
+body.kawaii .key {
+    background: transparent;
+    border: 1px solid #ff77b5; /* Soft pink border */
+    color: #ff77b5; /* Soft pink text */
+    text-shadow: 0 0 5px #ff77b5; /* Soft glowing text */
+}
+
+body.kawaii .key:hover {
+    background: #ff77b5; /* Soft pink background on hover */
+    color: #fff; /* White text on hover for contrast */
+    box-shadow: 0 0 20px #ff77b5; /* Glowing effect on hover */
+}
+
+body.kawaii .button {
+    background: #ff6f91; /* Soft coral pink for buttons */
+    border: 2px solid #ff6f91;
+    color: #fff;
+    text-shadow: 0 0 5px #ff6f91; /* Soft glow for button text */
+    transition: all 0.3s ease-in-out;
+}
+
+body.kawaii .button:hover {
+    background: #ff3d6d; /* Darker pink on hover */
+    border-color: #ff3d6d;
+    box-shadow: 0 0 15px #ff3d6d;
+}
+
+/* Additional kawaii touches */
+body.kawaii .sparkles {
+    background: url('sparkles.png') repeat; /* Sparkly effect for extra charm */
+    opacity: 0.5;
+}
+
+body.kawaii .heart {
+    color: #ff5c8d; /* Soft red heart */
+    font-size: 1.5rem;
+    animation: kawaiiPulse 1.5s ease-in-out infinite;
+}
+
+
+/* Floating bubble animation */
+@keyframes floatBubble {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-30vh) rotate(180deg);
+    }
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+/* Floating decoration animation */
+@keyframes floatDecoration {
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-30vh) rotate(180deg);
+    }
+    100% {
+        transform: translateY(0) rotate(360deg);
+    }
+}
+
+/* Falling animation for elements */
+@keyframes fallDown {
+    0% {
+        transform: translateY(-100vh); /* Start above the container */
+    }
+    100% {
+        transform: translateY(100vh); /* Fall to the bottom of the container */
+    }
+}
+
+/* Bubble styles */
+.kawaii-bubble {
+    position: absolute;
+    background-color: #ff77b5; /* Soft pink */
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: fallDown 5s linear infinite; /* Fall animation */
+    animation-delay: calc(5s * var(--index)); /* Randomize delay */
+    width: 20px;
+    height: 20px;
+}
+
+/* Decoration styles */
+.kawaii-decoration {
+    position: absolute;
+    font-size: 2rem;
+    opacity: 0.8;
+    animation: fallDown 6s linear infinite; /* Fall animation */
+    animation-delay: calc(6s * var(--index)); /* Randomize delay */
+}

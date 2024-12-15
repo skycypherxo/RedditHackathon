@@ -5,7 +5,7 @@ import json
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 reddit = praw.Reddit(
     client_id='3P81k3yxN6S9ct8nbeB0lA',
