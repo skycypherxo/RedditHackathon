@@ -74,3 +74,16 @@ body.gothic .key:hover {
     box-shadow: 0 0 15px rgba(139,0,0,0.7);
 }
 
+body .key.correct {
+    background: linear-gradient(rgb(4, 187, 1), rgb(180, 245, 28));
+    color: #000; 
+    font-weight: bold;
+    border: 2px solid #4caf50; 
+}
+
+body .key.incorrect {
+    background: linear-gradient(rgb(177, 1, 1), rgb(246, 2, 2));
+    color: #fff; 
+    font-weight: bold;
+    border: 2px solid #f44336; 
+}

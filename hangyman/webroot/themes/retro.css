@@ -177,3 +177,17 @@ body.retro .theme-background {
     background: linear-gradient(to top, #d8f904, #4ef706); /* Soft gradient from pink to white */
     filter: blur(50px);
 }
+
+body .key.correct {
+    background: linear-gradient(rgb(4, 187, 1), rgb(180, 245, 28));
+    color: #000; 
+    font-weight: bold;
+    border: 2px solid #4caf50; 
+}
+
+body .key.incorrect {
+    background: linear-gradient(rgb(177, 1, 1), rgb(246, 2, 2));
+    color: #fff; 
+    font-weight: bold;
+    border: 2px solid #f44336; 
+}

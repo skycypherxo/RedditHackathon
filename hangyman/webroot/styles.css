@@ -206,15 +206,17 @@ body.gothic #word-display {
 
 
 .key.correct {
-    background: linear-gradient(rgb(4, 187, 1),rgb(180, 245, 28)); 
-    color: #fff;
-    
+    background: linear-gradient(rgb(4, 187, 1), rgb(180, 245, 28));
+    color: #000; /* Changed to black for better contrast */
+    font-weight: bold; /* Emphasize text */
+    border: 2px solid #4caf50; /* Add a border for visibility */
 }
 
 .key.incorrect {
-    background: linear-gradient(rgb(177, 1, 1),rgb(246, 2, 2)); 
-    color: #fff;
-    
+    background: linear-gradient(rgb(177, 1, 1), rgb(246, 2, 2));
+    color: #fff; /* Ensure high contrast */
+    font-weight: bold; /* Emphasize text */
+    border: 2px solid #f44336; /* Add a border for visibility */
 }
 
 
