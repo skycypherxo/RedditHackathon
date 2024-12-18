@@ -191,3 +191,10 @@ body .key.incorrect {
     font-weight: bold;
     border: 2px solid #f44336; 
 }
+
+
+
+body.retro .key {
+    padding: 4px 6px;         
+    font-size: 0.4em; 
+}

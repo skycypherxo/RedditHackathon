@@ -7,13 +7,13 @@ Devvit.configure({
 
 // Adds a new menu item to the subreddit allowing to create a new post
 Devvit.addMenuItem({
-  label: 'Hangman',
+  label: 'Snooman_UwU',
   location: 'subreddit',
   onPress: async (_event, context) => {
     const { reddit, ui } = context;
     const subreddit = await reddit.getCurrentSubreddit();
     const post = await reddit.submitPost({
-      title: 'Webview Example',
+      title: 'Snooman UwU',
       subredditName: subreddit.name,
       // The preview appears while the post loads
       preview: (

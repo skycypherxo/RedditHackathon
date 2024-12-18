@@ -1,24 +1,46 @@
 import { initializeThemes } from './js/themeManager.js';
 
+window.addEventListener('message', (event) => {
+    console.log('Received full event:', event);
+
+    // Check if the event data has the expected structure
+    if (event.data && event.data.type === 'devvit-message') {
+        try {
+            const postData = event.data.data || event.data;
+            console.log('Parsed postData:', postData);
+
+            // Initialize the game with the received data
+            new HangmanGame(postData);
+        } catch (e) {
+            console.error('Error displaying postData:', e);
+            document.getElementById('postDataDisplay').innerHTML = `
+                <p>Error displaying data:</p>
+                <p>${e.message}</p>
+                <p>Full error details: ${JSON.stringify(e, null, 2)}</p>
+            `;
+        }
+    } else {
+        console.log('Message does not match expected structure:', event.data);
+    }
+});
+
 class HangmanGame {
     static activeGame = null;
-    static totalScore = 0; // Static property to track cumulative score
+    static totalScore = 0;
 
-    constructor(subreddits) {
+    constructor(postData) {
         if (HangmanGame.activeGame) {
             HangmanGame.activeGame.stopTimers();
         }
         HangmanGame.activeGame = this;
 
-        this.subreddits = subreddits;
+        this.postData = postData;
         this.maxGuesses = 6;
-        this.canvas = document.getElementById('hangmanCanvas');
-        this.canvas.width = 200;
-        this.canvas.height = 200;
         this.timeLimit = 60;
-        this.timer = null;
-        this.stopwatch = null;
         this.elapsedTime = 0;
+        this.guessedLetters = new Set();
+        this.remainingGuesses = this.maxGuesses;
+        this.gameOver = false;
 
         this.init();
     }
@@ -29,53 +51,66 @@ class HangmanGame {
     }
 
     async init() {
-        if (this.stopwatch) clearInterval(this.stopwatch);
-
-        this.elapsedTime = 0;
-        this.timer = null;
-        this.stopwatch = null;
-
-        const postContainer = document.getElementById('post-container');
-        postContainer.innerHTML = ''; // Clear previous content
-
-        const postData = await this.fetchRandomPost();
-
-        if (!postData) {
-            return;
-        }
-
-        this.word = postData.subreddit.toUpperCase();
-        this.textExcerpt = postData.text_excerpt || '';
-
-        this.guessedLetters = new Set();
-        this.remainingGuesses = this.maxGuesses;
-        this.gameOver = false;
-
-        const wordDisplay = document.getElementById('word-display');
-        const scoreDisplay = document.getElementById('score');
-        const timerDisplay = document.querySelector('.timer');
-        const guessesLeft = document.querySelector('.guesses-left');
-
-        wordDisplay.style.color = '#fff';
-        scoreDisplay.textContent = HangmanGame.totalScore; // Display cumulative score
-        timerDisplay.textContent = `Time: ${this.timeLimit}s`;
-        guessesLeft.textContent = `Guesses left: ${this.remainingGuesses}`;
-
-        if (postData.image) {
-            const img = document.createElement('img');
-            img.src = postData.image;
-            img.alt = "Random Reddit Post";
-            postContainer.appendChild(img);
-        } else if (this.textExcerpt) {
-            const textExcerpt = document.createElement('p');
-            textExcerpt.textContent = this.textExcerpt;
-            postContainer.appendChild(textExcerpt);
-        }
-
+        this.displayPostData();
+        this.setupUI();
         this.createKeyboard();
         this.updateDisplay();
         this.clearCanvas();
         this.startStopwatch();
+    }
+
+    displayPostData() {
+        const subredditField = document.getElementById('word-display');
+        const imageField = document.getElementById('imageField');
+        const textExcerptField = document.getElementById('textExcerpt');
+        const urlField = document.getElementById('urlField');
+    
+        // Extract the relevant data with fallbacks
+        const subreddit = this.postData.message.message.subreddit?.toUpperCase() || 'UNKNOWN';
+        const imageUrl = this.postData.message.message.image;
+        const textExcerpt = this.postData.message.message.text_excerpt;
+        const url = this.postData.message.message.url;
+    
+        // Set the word to guess based on subreddit
+        this.word = subreddit;
+    
+        // Update UI fields for the word display
+        if (subredditField) {
+            subredditField.textContent = this.word.split('').map(() => '_').join(' ');
+        }
+    
+        // Handle image display
+        if (imageField) {
+            imageField.style.display = imageUrl ? 'block' : 'none';
+            imageField.innerHTML = imageUrl
+                ? `<img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: contain;">`
+                : 'Image: No image available.';
+        }
+    
+        // Handle text excerpt display
+        if (textExcerptField) {
+            textExcerptField.style.display = textExcerpt ? 'block' : 'none';
+            textExcerptField.textContent = textExcerpt
+                ? `Text: ${textExcerpt}`
+                : 'Text: No text available.';
+        }
+    
+        // Handle URL display
+        if (urlField) {
+            urlField.innerHTML = url
+                ? `URL: <a href="${url}" target="_blank">${url}</a>`
+                : '';
+        }
+    }    
+
+    setupUI() {
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.querySelector('.timer');
+        const guessesLeft = document.querySelector('.guesses-left');
+
+        scoreDisplay.textContent = HangmanGame.totalScore;
+        timerDisplay.textContent = `Time: ${this.timeLimit}s`;
+        guessesLeft.textContent = `Guesses left: ${this.remainingGuesses}`;
     }
 
     createKeyboard() {
@@ -94,69 +129,31 @@ class HangmanGame {
 
     makeGuess(letter) {
         if (this.gameOver || this.guessedLetters.has(letter)) return;
-
+    
         this.guessedLetters.add(letter);
         const isCorrect = this.word.includes(letter);
-
+    
         const button = document.querySelector(`.key[data-letter="${letter}"]`);
         button.classList.remove('correct', 'incorrect');
-
+    
         if (isCorrect) {
             button.classList.add('correct');
-            HangmanGame.totalScore += 10; // Update cumulative score
-            document.getElementById('score').textContent = HangmanGame.totalScore;
         } else {
             button.classList.add('incorrect');
             this.remainingGuesses--;
             const wrongGuesses = this.maxGuesses - this.remainingGuesses;
             this.drawHangman(wrongGuesses);
         }
-
+    
         this.updateDisplay();
         this.checkGameEnd();
-    }
-
+    }    
     updateDisplay() {
         const wordDisplay = document.getElementById('word-display');
-        wordDisplay.textContent = this.word.split('').map(letter => this.guessedLetters.has(letter) ? letter : '_').join(' ');
+        wordDisplay.textContent = this.word.split('').map(letter => (this.guessedLetters.has(letter) ? letter : '_')).join(' ');
 
         const guessesLeft = document.querySelector('.guesses-left');
         guessesLeft.textContent = `Guesses left: ${this.remainingGuesses}`;
-
-        document.querySelectorAll('.key').forEach(key => {
-            if (this.guessedLetters.has(key.textContent)) {
-                key.classList.add('used');
-            }
-        });
-    }
-
-    checkGameEnd() {
-        const won = this.word.split('').every(letter => this.guessedLetters.has(letter));
-        const lost = this.remainingGuesses === 0;
-
-        if (won || lost) {
-            clearInterval(this.stopwatch);
-            this.gameOver = true;
-
-            const wordDisplay = document.getElementById('word-display');
-
-            if (lost) {
-                wordDisplay.style.color = '#e74c3c';
-                wordDisplay.textContent = this.word;
-
-                setTimeout(() => {
-                    alert(`Game Over! The word was: ${this.word}`);
-                }, 100);
-            } else {
-                HangmanGame.totalScore += 5; // Bonus for winning
-                document.getElementById('score').textContent = HangmanGame.totalScore;
-
-                wordDisplay.style.color = '#2ecc71';
-                setTimeout(() => {
-                    alert('Congratulations! You won!');
-                }, 100);
-            }
-        }
     }
 
     clearCanvas() {
@@ -172,11 +169,26 @@ class HangmanGame {
         }
     }
 
+    checkGameEnd() {
+        if (this.remainingGuesses <= 0) {
+            this.gameOver = true;
+            clearInterval(this.stopwatch); // Stop the timer when no guesses remain
+            alert(`Game Over! The word was: ${this.word}`);
+            const wordDisplay = document.getElementById('word-display');
+            wordDisplay.style.color = '#e74c3c';
+            wordDisplay.textContent = this.word;
+        } else if (!document.getElementById('word-display').textContent.includes('_')) {
+            this.gameOver = true;
+            clearInterval(this.stopwatch); // Stop the timer when the word is guessed correctly
+            alert('Congratulations! You guessed the word.');
+        }
+    }
+    
+
     startStopwatch() {
         if (this.stopwatch) clearInterval(this.stopwatch);
 
         const timerDisplay = document.querySelector('.timer');
-
         timerDisplay.textContent = `Time: ${this.timeLimit}s`;
 
         this.stopwatch = setInterval(() => {
@@ -194,38 +206,9 @@ class HangmanGame {
             }
         }, 1000);
     }
-
-    async fetchRandomPost() {
-        try {
-            const response = await fetch('https://hangtwo.vercel.app/api/fetch-random-post', {
-                method: 'GET'
-              });
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching post:', error);
-            return null;
-        }
-    }
 }
 
-// Initialize game
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const subredditResponse = await fetch('subreddit_list.json');
-        const subreddits = await subredditResponse.json();
-
-        let game = new HangmanGame(subreddits);
-
-        document.getElementById('new-game').addEventListener('click', async () => {
-            game = new HangmanGame(subreddits);
-        });
-    } catch (error) {
-        console.error('Error initializing game:', error);
-    }
-});
-
-
+// Initialize themes
 document.addEventListener('DOMContentLoaded', () => {
     initializeThemes();
 });
