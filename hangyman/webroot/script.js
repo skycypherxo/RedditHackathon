@@ -236,39 +236,26 @@ class HangmanGame {
         }, 1000);
     }
 
-    // Function to send the score to the parent window
     sendScoreToDB() {
-        // Ensure username is initialized properly
-        const username = HangmanGame.username || 'anonymous';
-        
-        if (!username) {
-            console.error('Error: Username is missing. Cannot send score to DB.');
-            return;
-        }
-    
-        console.log('Preparing to send score to backend:', {
-            username: username,
-            score: HangmanGame.totalScore,
-        });
-    
-        // Post message to the backend via WebView
+        // Remove username from here, as it will be fetched in main.tsx
         window.parent.postMessage(
             {
                 type: 'setScore',
                 data: {
-                    username: username,
                     score: HangmanGame.totalScore,
                 },
             },
             '*'
         );
-    
+
+
         console.log('Message posted to parent window:', {
             type: 'setScore',
-            data: { username, score: HangmanGame.totalScore },
+            data: { score: HangmanGame.totalScore },
         });
     }
-    
+
+
 
     // Function to clear the game messages
     clearMessages() {
@@ -279,15 +266,7 @@ class HangmanGame {
     }
 }
 
-// Function to request a new game from the parent window
-function requestNewGame() {
-    window.parent.postMessage(
-        {
-            type: 'newGame'
-        },
-        '*'
-    );
-}
+
 
 // Initialize themes and add event listener for the new game button
 document.addEventListener('DOMContentLoaded', () => {
@@ -297,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const newGameButton = document.getElementById('newGameButton');
     if (newGameButton) {
         newGameButton.addEventListener('click', () => {
-            // Request new game from backend
+
             window.postMessage(
                 {
                     type: 'newGame'
@@ -323,5 +302,12 @@ window.addEventListener('message', (event) => {
 
         // Start a new game
         new HangmanGame(postData);
+
+        // Check for leaderboard update message
+        if (event.data.message && event.data.message.type === 'leaderboardUpdate') {
+            // Update leaderboard UI with event.data.message.data
+            console.log('Received leaderboard update:', event.data.message.data);
+            // Implement your UI update logic here
+        }
     }
 });

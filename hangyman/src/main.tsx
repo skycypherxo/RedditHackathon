@@ -12,6 +12,14 @@ Devvit.addCustomPostType({
     const [gameStarted, setGameStarted] = context.useState(false);
     const [leaderboardVisible, setLeaderboardVisible] = context.useState(false);
     const [postData, setPostData] = context.useState(null);
+    const [leaderboardData, setLeaderboardData] = context.useState(null);
+
+    const goHome = () => {
+      console.log('Navigating to Home...');
+      setGameStarted(false);
+      setLeaderboardVisible(false);
+      setPostData(null);
+    };
 
     // Fetch post data asynchronously using useAsync
     const { data, error, loading } = useAsync(async () => {
@@ -29,22 +37,77 @@ Devvit.addCustomPostType({
       }
     });
 
-    // Handle loading state
+    // Fetch leaderboard data using Devvit's Redis method
+    const fetchLeaderboard = async (context: Devvit.Context) => {
+      try {
+        const leaderboardData = await context.redis.zRange('leaderboard', 0, 9, { 
+          reverse: true, 
+          by: 'score'
+        });
+        console.log('Leaderboard Data:', leaderboardData);
+        return leaderboardData;
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+        return [];
+      }
+    };
+
+ const saveScore = async (context: Devvit.Context, score: number) => {
+  try {
+    // Get current user's username
+    const currUser = await context.reddit.getCurrentUser();
+    const username = currUser?.username ?? 'anonymous';
+
+    // Add score to leaderboard
+    await context.redis.zAdd('leaderboard', { 
+      member: username, 
+      score: score 
+    });
+
+    // Log the saved score
+    console.log(`Score saved for ${username}: ${score}`);
+    
+    // Fetch updated leaderboard
+    const updatedLeaderboard = await context.redis.zRange('leaderboard', 0, 9, { 
+      reverse: true, 
+      by: 'score' 
+    });
+    
+    // Send updated leaderboard to webview
+    context.ui.webView.postMessage('fetchWebview', {
+      type: 'leaderboardUpdate',
+      data: updatedLeaderboard
+    });
+
+  } catch (error) {
+    console.error('Error saving score:', error);
+  }
+};
+ 
+
+    // Function to log the leaderboard
+    const logLeaderboard = async (context: Devvit.Context) => {
+      try {
+        const leaderboard = await context.redis.zRange('leaderboard', 0, -1, { reverse: true, by: 'score' });
+        console.log('Current leaderboard:', leaderboard);
+      } catch (error) {
+        console.error('Error fetching leaderboard:', error);
+      }
+    };
+
     if (loading) {
       return <text>Loading Post... Please wait while the content is being fetched.</text>;
     }
 
-    // Handle error state
     if (error) {
       return (
         <vstack>
           <text>Error: {error.message}</text>
-          <button onPress={() => setPostData(null)}>Retry</button> {/* Retry button */}
+          <button onPress={() => setPostData(null)}>Retry</button>
         </vstack>
       );
     }
 
-    // Main Menu - If game hasn't started and leaderboard isn't visible
     if (!gameStarted && !leaderboardVisible) {
       return (
         <vstack padding="medium" gap="medium" alignment="middle center">
@@ -53,30 +116,41 @@ Devvit.addCustomPostType({
             <button
               onPress={() => {
                 if (data) {
-                  setPostData(data); // Set the post data to use for the game
+                  setPostData(data);
                   console.log('Sending postData to webview:', data);
                   context.ui.webView.postMessage('fetchWebview', {
                     type: 'devvit-message',
                     message: data,
                   });
-                  setGameStarted(true); // Start the game after setting the post data
+                  setGameStarted(true);
                 }
               }}
             >
               Start Game
             </button>
-            <button onPress={() => setLeaderboardVisible(true)}>View Leaderboard</button>
+            <button
+              onPress={async () => {
+                const leaderboard = await fetchLeaderboard(context);
+                setLeaderboardData(leaderboard);
+                context.ui.webView.postMessage('fetchLeaderboard', {
+                  type: 'leaderboard-message',
+                  message: leaderboard,
+                });
+                setLeaderboardVisible(true);
+              }}
+            >
+              View Leaderboard
+            </button>
           </vstack>
         </vstack>
       );
     }
 
-    // Handle "New Game" request (fetch new data directly without refetch)
     const startNewGame = async () => {
       console.log('Starting new game...');
-      setGameStarted(false); // Reset the gameStarted state
-      setLeaderboardVisible(false); // Hide leaderboard if visible
-      setPostData(null); // Clear current game data
+      setGameStarted(false);
+      setLeaderboardVisible(false);
+      setPostData(null);
 
       try {
         const response = await fetch('https://hangtwo.vercel.app/api/fetch-random-post');
@@ -86,52 +160,56 @@ Devvit.addCustomPostType({
         const newData = await response.json();
         console.log('Fetched new post data:', newData);
 
-        setPostData(newData); // Set new post data for the new game
+        setPostData(newData);
         context.ui.webView.postMessage('fetchWebview', {
           type: 'devvit-message',
           message: newData,
         });
 
-        setGameStarted(true); // Start the game
+        setGameStarted(true);
       } catch (error) {
         console.error('Error starting new game:', error);
         alert('Failed to start new game. Please try again.');
       }
     };
 
-    // Render the game WebView when the game starts
     if (gameStarted && !leaderboardVisible) {
       return (
-        <blocks grow>
+        <vstack grow>
           <webview
             id="fetchWebview"
             url="page.html"
             grow
             height="100%"
-            onMessage={(message) => {
-              console.log('Received message from webview:', message);
+            onMessage={async (msg) => {
+              console.log('Received message in Devvit app:', msg);
+              if (msg.type === 'setScore') {
+                await saveScore(context, msg.data.username, msg.data.score);
+              }
             }}
           />
-          <button onPress={startNewGame}>New Game</button>
-        </blocks>
+          <hstack gap="medium" alignment="middle center">
+            <button onPress={startNewGame}>New Game</button>
+            <button onPress={goHome}>Home</button>
+          </hstack>
+        </vstack>
       );
     }
 
-    // Render the leaderboard WebView when the leaderboard is visible
     if (leaderboardVisible) {
       return (
-        <blocks grow>
+        <vstack grow>
           <webview
             id="fetchLeaderboardView"
             url="leaderboard.html"
             grow
             height="100%"
             onMessage={(message) => {
-              console.log('Received message from webview:', message);
+              console.log('Received message from leaderboard view:', message);
             }}
           />
           <button onPress={() => setLeaderboardVisible(false)}>Back to Menu</button>
-        </blocks>
+        </vstack>
       );
     }
 
